@@ -60,9 +60,9 @@ label{font-size:12px;color:var(--muted)}
   <div class="row" style="justify-content:space-between;align-items:center;margin-top:0">
     <div><span id="diff" class="btn">초급</span> <strong>LEVEL <b id="lvlno">01</b></strong> <span>6 × 6</span></div>
     <div class="row" style="margin-top:0">
-      <button id="rotateToggle" class="btn primary">화면 회전: 켜기</button>
-      <button id="v3d" class="btn primary">입체</button>
-      <button id="vtop" class="btn">위에서</button>
+      <button id="rotateToggle" class="btn">화면 회전: 꺼기</button>
+      <button id="v3d" class="btn">입체</button>
+      <button id="vtop" class="btn primary">위에서</button>
     </div>
   </div>
 
@@ -101,7 +101,7 @@ label{font-size:12px;color:var(--muted)}
   <h2>게임 조작</h2>
   <p>자동차를 길이 방향으로 드래그하거나, 차량을 선택한 뒤 방향키로 이동하세요.</p>
   <ul>
-    <li>“화면 회전: 켜기”면 빈 곳 드래그로 화면을 돌릴 수 있고, “꺼기”면 회전 없이 차량 이동만 됩니다. ★ 목표 차량(화살표 표시)을 오른쪽 출구로 보내면 클리어!</li>
+    <li>기본값은 “화면 회전: 꺼기” + “위에서” 시점입니다. “화면 회전: 켜기”면 빈 곳 드래그로 화면을 돌릴 수 있고, “꺼기”면 회전 없이 차량 이동만 됩니다. ★ 목표 차량(화살표 표시)을 오른쪽 출구로 보내면 클리어!</li>
     <li>모든 차는 앞뒤로만 이동할 수 있어요.</li>
     <li>되돌리기(U), 다시 시작(R)로 빠르게 복구할 수 있어요.</li>
   </ul>
@@ -200,7 +200,7 @@ function beep(f=660){ if(!soundOn)return; try{audio=audio||new (window.AudioCont
 // ---- three setup ----
 const wrap=document.getElementById("three");
 const scene=new THREE.Scene(); scene.background=new THREE.Color(0xdcebf7);
-const camera=new THREE.PerspectiveCamera(45,800/520,0.1,100); camera.up.set(0,0,1); camera.position.set(9,-10,10); camera.lookAt(0,0,0);
+const camera=new THREE.PerspectiveCamera(45,800/520,0.1,100); camera.up.set(0,0,1); camera.position.set(0,0,12); camera.lookAt(0,0,0);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(800,520); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; wrap.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
 // 화면 회전은 빈 곳 드래그일 때만 (차량 드래그와 충돌 방지)
@@ -371,7 +371,7 @@ function updateUI(){ document.getElementById("moves").textContent=moves; documen
 function fmt(){const s=Math.floor((Date.now()-startTime)/1000); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
 
 // input: click select, arrows/drag
-let rotateEnabled=true;
+let rotateEnabled=false;
 function applyRotateToggle(){ controls.enableRotate=rotateEnabled; controls.enabled=rotateEnabled; const b=document.getElementById("rotateToggle"); if(b){ b.textContent=rotateEnabled?"화면 회전: 켜기":"화면 회전: 꺼기"; b.classList.toggle("primary", rotateEnabled); b.setAttribute("aria-pressed", rotateEnabled?"true":"false"); } }
 document.getElementById("rotateToggle").onclick=()=>{ rotateEnabled=!rotateEnabled; applyRotateToggle(); };
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let drag=null;
@@ -399,8 +399,8 @@ document.getElementById("hint").onclick=()=>{const p=bfs(LEVELS[levelIdx], state
 document.getElementById("solve").onclick=async()=>{ if(playing)return; playing=true; let cur=JSON.parse(JSON.stringify(state)); let path=bfs(LEVELS[levelIdx], cur); if(!path){alert("해법 없음"); playing=false; return;} for(const mv of path){
     state=cur;
     const [dr,dc]=[mv.to[0]-cur[mv.moved][0], mv.to[1]-cur[mv.moved][1]]; tryMove(mv.moved,dr,dc,{silent:true}); cur=JSON.parse(JSON.stringify(state)); await new Promise(r=>setTimeout(r,600)); if(isGoal(state))break; } playing=false; };
-document.getElementById("v3d").onclick=()=>{camera.position.set(9,-10,10); controls.target.set(0,0,0);};
-document.getElementById("vtop").onclick=()=>{camera.position.set(0,0,13);};
+document.getElementById("v3d").onclick=()=>{camera.position.set(9,-10,10); controls.target.set(0,0,0); document.getElementById("v3d").classList.add("primary"); document.getElementById("vtop").classList.remove("primary");};
+document.getElementById("vtop").onclick=()=>{camera.position.set(0,0,12); controls.target.set(0,0,0); document.getElementById("vtop").classList.add("primary"); document.getElementById("v3d").classList.remove("primary");};
 document.getElementById("sound").onclick=e=>{soundOn=!soundOn; e.target.textContent=soundOn?"사운드: 켜기":"사운드: 끄기";};
 document.getElementById("theme").onclick=e=>{document.body.classList.toggle("dark"); e.target.textContent=document.body.classList.contains("dark")?"라이트 모드":"다크 모드";};
 const upd=`2026-11-08
@@ -422,7 +422,7 @@ function animate(){ requestAnimationFrame(animate); const t=performance.now()/10
     const ring=tg.getObjectByName("TargetRing"); if(ring){ const s=1+Math.sin(t*4)*0.10; ring.scale.set(s,s,1); }
     if(tg.userData.flash){ const on=Math.floor(t*2)%2===0; tg.userData.flash.red.emissiveIntensity=on?2.5:0.3; tg.userData.flash.blue.emissiveIntensity=on?0.3:2.5; } }
   controls.update(); renderer.render(scene,camera); }
-buildLevel(); animate();
+buildLevel(); applyRotateToggle(); animate();
 </script>
 </body>
 </html>
