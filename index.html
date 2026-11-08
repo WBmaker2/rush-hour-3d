@@ -60,6 +60,7 @@ label{font-size:12px;color:var(--muted)}
   <div class="row" style="justify-content:space-between;align-items:center;margin-top:0">
     <div><span id="diff" class="btn">초급</span> <strong>LEVEL <b id="lvlno">01</b></strong> <span>6 × 6</span></div>
     <div class="row" style="margin-top:0">
+      <button id="rotateToggle" class="btn primary">화면 회전: 켜기</button>
       <button id="v3d" class="btn primary">입체</button>
       <button id="vtop" class="btn">위에서</button>
     </div>
@@ -100,7 +101,7 @@ label{font-size:12px;color:var(--muted)}
   <h2>게임 조작</h2>
   <p>자동차를 길이 방향으로 드래그하거나, 차량을 선택한 뒤 방향키로 이동하세요.</p>
   <ul>
-    <li>노란 경찰차(길이 2)를 오른쪽 출구로 보내면 클리어!</li>
+    <li>“화면 회전: 켜기”면 빈 곳 드래그로 화면을 돌릴 수 있고, “꺼기”면 회전 없이 차량 이동만 됩니다. ★ 목표 차량(화살표 표시)을 오른쪽 출구로 보내면 클리어!</li>
     <li>모든 차는 앞뒤로만 이동할 수 있어요.</li>
     <li>되돌리기(U), 다시 시작(R)로 빠르게 복구할 수 있어요.</li>
   </ul>
@@ -277,20 +278,40 @@ function buildToyCar(L, o, colorHex, isPolice, isTruck){
     const hub=new THREE.Mesh(hubGeo, mkMat(0xdbe7ff,0.25,0.6));
     hub.position.copy(w.position); hub.rotation.copy(w.rotation); g.add(hub);
   }
-  // police extras
+  // police extras — target car (very distinctive, no explanation needed)
   if(isPolice){
-    // white door (front of cabin) + stripe
-    const stripeGeo=isH?new THREE.BoxGeometry(len*0.78,0.30,0.06):new THREE.BoxGeometry(0.30,len*0.78,0.06);
+    // gold halo ring under the car (pulses)
+    const ring=new THREE.Mesh(new THREE.RingGeometry(0.72, 0.94, 40), new THREE.MeshBasicMaterial({color:0xffd23f, side:THREE.DoubleSide, transparent:true, opacity:0.95}));
+    ring.position.set(0,0,0.05); ring.name="TargetRing"; g.add(ring);
+    // white side stripe + black POLICE text sides
+    const stripeGeo=isH?new THREE.BoxGeometry(len*0.82,0.34,0.06):new THREE.BoxGeometry(0.34,len*0.82,0.06);
     const stripe=new THREE.Mesh(stripeGeo, whiteMat); stripe.position.set(0,0,0.62); g.add(stripe);
-    const lightbar=new THREE.Mesh(new THREE.BoxGeometry(isH?0.36:0.58, isH?0.58:0.36, 0.14), mkMat(0x111827,0.4));
-    lightbar.position.set(0,0,1.24); g.add(lightbar);
-    const r=new THREE.Mesh(new THREE.BoxGeometry(isH?0.15:0.22, isH?0.22:0.15, 0.12), new THREE.MeshStandardMaterial({color:0xef4444, emissive:0xef4444, emissiveIntensity:1.2}));
-    r.position.set(isH?-0.10:0, isH?0:-0.10, 1.24); g.add(r);
-    const b=new THREE.Mesh(new THREE.BoxGeometry(isH?0.15:0.22, isH?0.22:0.15, 0.12), new THREE.MeshStandardMaterial({color:0x3b82f6, emissive:0x3b82f6, emissiveIntensity:1.2}));
-    b.position.set(isH?0.10:0, isH?0:0.10, 1.24); g.add(b);
-    // side shield star bump (simple white cross)
-    const cross=new THREE.Mesh(new THREE.BoxGeometry(isH?0.18:0.06, isH?0.06:0.18, 0.04), new THREE.MeshStandardMaterial({color:0x0f172a}));
-    cross.position.set(isH?-0.04:0, isH?0:-0.04, 0.66); g.add(cross);
+    // flashing lightbar on roof
+    const lightbar=new THREE.Mesh(new THREE.BoxGeometry(isH?0.42:0.66, isH?0.66:0.42, 0.16), mkMat(0x111827,0.4));
+    lightbar.position.set(0,0,1.28); g.add(lightbar);
+    const rMat=new THREE.MeshStandardMaterial({color:0xff3333, emissive:0xff1a1a, emissiveIntensity:2.2});
+    const bMat=new THREE.MeshStandardMaterial({color:0x3b82f6, emissive:0x2563eb, emissiveIntensity:0.25});
+    const r=new THREE.Mesh(new THREE.BoxGeometry(isH?0.18:0.30, isH?0.30:0.18, 0.14), rMat);
+    r.position.set(isH?-0.11:0, isH?0:-0.11, 1.28); g.add(r);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(isH?0.18:0.30, isH?0.30:0.18, 0.14), bMat);
+    b.position.set(isH?0.11:0, isH?0:0.11, 1.28); g.add(b);
+    g.userData.flash={red:rMat, blue:bMat};
+    // big bouncing gold arrow hovering above
+    const arrow=new THREE.Group(); arrow.name="TargetArrow";
+    const shaft=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,0.34,12), new THREE.MeshStandardMaterial({color:0xffb700, emissive:0xff8c00, emissiveIntensity:0.7}));
+    shaft.position.z=0.20; arrow.add(shaft);
+    const head=new THREE.Mesh(new THREE.ConeGeometry(0.30,0.38,16), new THREE.MeshStandardMaterial({color:0xffb700, emissive:0xff8c00, emissiveIntensity:0.7}));
+    head.rotation.x=Math.PI; head.position.z=-0.05; arrow.add(head);
+    arrow.position.set(0,0,2.05); g.add(arrow);
+    // floating label sprite "★ 목표 차량 ★"
+    const cnv=document.createElement("canvas"); cnv.width=512; cnv.height=128; const ctx=cnv.getContext("2d");
+    ctx.fillStyle="#ffcc00"; ctx.beginPath(); ctx.roundRect(6,14,500,100,28); ctx.fill();
+    ctx.strokeStyle="#111827"; ctx.lineWidth=8; ctx.stroke();
+    ctx.fillStyle="#111827"; ctx.font="900 56px Helvetica Neue, Arial, sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText("★ 목표 차량 ★", 256, 66);
+    const tex=new THREE.CanvasTexture(cnv);
+    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true}));
+    sprite.scale.set(1.9,0.48,1); sprite.position.set(0,0,2.55); sprite.name="TargetLabel"; g.add(sprite);
   }
   g.traverse(obj=>{ obj.userData.group=g; });
   return g;
@@ -303,7 +324,7 @@ function buildLevel(){
   level.v.forEach((v,i)=>{
     const [name,r,c,L,o,ck]=v;
     const g=buildToyCar(L, o, COLORS[ck]||0x64748b, name==="P", L===3);
-    g.userData={i,carName:name,o,L}; g.name="car"+i;
+    const flash=g.userData.flash||null; g.userData={i,carName:name,o,L,flash}; g.name="car"+i;
     scene.add(g); vehicles.push(g);
   });
   syncCars(); updateUI();
@@ -327,12 +348,16 @@ function updateUI(){ document.getElementById("moves").textContent=moves; documen
 function fmt(){const s=Math.floor((Date.now()-startTime)/1000); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
 
 // input: click select, arrows/drag
+let rotateEnabled=true;
+function applyRotateToggle(){ controls.enableRotate=rotateEnabled; controls.enabled=true; const b=document.getElementById("rotateToggle"); if(b){ b.textContent=rotateEnabled?"화면 회전: 켜기":"화면 회전: 꺼기"; b.classList.toggle("primary", rotateEnabled); } }
+document.getElementById("rotateToggle").onclick=()=>{ rotateEnabled=!rotateEnabled; applyRotateToggle(); };
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let drag=null;
 function pickCar(e){ const r=renderer.domElement.getBoundingClientRect(); ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1; ray.setFromCamera(ptr,camera);
   const hits=ray.intersectObjects(vehicles,true); return hits.length ? hits[0].object.userData.group.userData.i : null; }
 renderer.domElement.addEventListener("pointerdown",e=>{ selected=pickCar(e);
-  if(selected!=null){ controls.enabled=false; drag={x:e.clientX,y:e.clientY,i:selected}; renderer.domElement.style.cursor="grabbing"; } else { controls.enabled=true; drag=null; } }, true);
-addEventListener("pointerup",()=>{ drag=null; controls.enabled=true; renderer.domElement.style.cursor=""; });
+  if(selected!=null){ controls.enabled=false; drag={x:e.clientX,y:e.clientY,i:selected}; renderer.domElement.style.cursor="grabbing"; }
+  else { controls.enabled=rotateEnabled; controls.enableRotate=rotateEnabled; drag=null; } }, true);
+addEventListener("pointerup",()=>{ drag=null; controls.enabled=rotateEnabled; controls.enableRotate=rotateEnabled; renderer.domElement.style.cursor=""; });
 renderer.domElement.addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; const v=LEVELS[levelIdx].v[drag.i];
   if(v[4]==="H"){ if(Math.abs(dx)>30){ tryMove(drag.i,0,dx>0?1:-1); drag.x=e.clientX; } }
   else { if(Math.abs(dy)>30){ tryMove(drag.i,dy>0?1:-1,0); drag.y=e.clientY; } } });
@@ -357,6 +382,7 @@ document.getElementById("theme").onclick=e=>{document.body.classList.toggle("dar
 const upd=`2026-11-08
 - Rush Hour 3D 웹앱 출시: 12개 퍼즐, 드래그/방향키 이동, 최소 이동 계산(BFS), 힌트·해법 재생, 되돌리기/다시 시작, 시간·기록 저장, Three.js 3D 입체/위에서 보기, 다크 모드·사운드
 - 개선: 차량 드래그 시 화면 회전 멈춤(차량만 이동). 귀여운 장난감 자동차 재디자인(둥근 본체·유리 캐빈·라이트·범퍼·허브캡, 트럭 화물 상자, 경찰차 경광등/줄무늬)
+- 개선: 화면 회전 토글(“화면 회전: 켜기/꺼기”) — 꺼기면 회전 없이 차량 이동만. 목표 경찰차는 ★ 목표 차량 ★ 라벨·금빛 화살표·금빛 링·점멸 경광등으로 한눈에 구분
 - 참고 사이트(jvibeschool.org/3D/RushHour)의 6×6 보드·노란 경찰차 출구 컨셉을 Blender 씬(rush-hour-3d.blend)과 공유
 `;
 document.getElementById("updText").textContent=upd;
@@ -364,7 +390,12 @@ document.getElementById("updbtn").onclick=()=>document.getElementById("updModal"
 document.getElementById("help").onclick=()=>document.getElementById("helpModal").classList.add("open");
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 
-function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+function animate(){ requestAnimationFrame(animate); const t=performance.now()/1000;
+  const tg=vehicles[0];
+  if(tg){ const arrow=tg.getObjectByName("TargetArrow"); if(arrow) arrow.position.z=2.05+Math.sin(t*4)*0.18;
+    const ring=tg.getObjectByName("TargetRing"); if(ring){ const s=1+Math.sin(t*4)*0.10; ring.scale.set(s,s,1); }
+    if(tg.userData.flash){ const on=Math.floor(t*2)%2===0; tg.userData.flash.red.emissiveIntensity=on?2.5:0.3; tg.userData.flash.blue.emissiveIntensity=on?0.3:2.5; } }
+  controls.update(); renderer.render(scene,camera); }
 buildLevel(); animate();
 </script>
 </body>
