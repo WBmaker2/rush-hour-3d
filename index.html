@@ -121,6 +121,12 @@ label{font-size:12px;color:var(--muted)}
 <button class="btn primary" data-close>확인</button>
 </div></div>
 
+<div class="modal" id="winModal"><div class="sheet">
+<h2>🎉 미션 해결! 목표차가 출구로 나갔어요</h2>
+<p id="winInfo"></p>
+<button id="nextChallenge" class="btn primary btn-pulse" style="width:100%;padding:14px;">다음 단계 도전</button>
+</div></div>
+
 <div class="modal" id="updModal"><div class="sheet">
 <h2>업데이트 내역</h2>
 <pre id="updText"></pre>
@@ -157,12 +163,13 @@ const saveKey="rush-hour-progress-v1";
 let prog=JSON.parse(localStorage.getItem(saveKey)||'{"done":[],"best":{}}');
 
 // ---- solvers (BFS for min + hint) ----
-function occFor(level, s){const g=Array.from({length:N},()=>Array(N).fill(".")); level.v.forEach((v,i)=>{const[nm, , ,L,o]=v; const[nr,nc]=s[i]; for(let k=0;k<L;k++){ if(o==="H")g[nr][nc+k]=nm; else g[nr+k][nc]=nm; }}); return g;}
+function isGoal(state){ return state[0][1] >= N - 1; } // 목표차 앞이 보드 밖으로 완전히 나간 상태 (col 5: 안쪽 1칸 + 밖 1칸)
+function occFor(level, s){const g=Array.from({length:N},()=>Array(N).fill(".")); level.v.forEach((v,i)=>{const[nm, , ,L,o]=v; const[nr,nc]=s[i]; for(let k=0;k<L;k++){ const rr=o==="H"?nr:nr+k, cc=o==="H"?nc+k:nc; if(rr<0||rr>=N||cc<0||cc>=N) continue; g[rr][cc]=nm; }}); return g;}
 function bfs(level, st){
   const q=[st]; const seen=new Set([JSON.stringify(st)]); const parent=new Map(); parent.set(JSON.stringify(st),null);
   while(q.length){
     const s=q.shift();
-    if(s[0][1]+2>=N){
+    if(isGoal(s)){
       const path=[]; let cur=JSON.stringify(s);
       while(parent.get(cur)!==null && parent.get(cur)!==undefined){ const mv=parent.get(cur); path.push(mv); cur=JSON.stringify(mv.from); }
       path.reverse(); return path;
@@ -173,7 +180,10 @@ function bfs(level, st){
       for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1]]){
         if(o==="H"&&dr!==0)continue; if(o==="V"&&dc!==0)continue;
         const nr=cr+dr,nc=cc+dc; let ok=true;
-        for(let k=0;k<L;k++){ const rr=o==="H"?nr:nr+k, c2=o==="H"?nc+k:nc; if(rr<0||rr>=N||c2<0||c2>=N){ok=false;break;} if(g[rr][c2]!=="."&&g[rr][c2]!==level.v[i][0]){ok=false;break;} }
+        for(let k=0;k<L;k++){ const rr=o==="H"?nr:nr+k, c2=o==="H"?nc+k:nc; const isTarget=i===0;
+          if(rr<0||rr>=N||c2<0){ok=false;break;}
+          if(c2>=N){ if(!(isTarget && rr===2 && c2===N)){ok=false;break;} else continue; }
+          if(g[rr][c2]!=="."&&g[rr][c2]!==level.v[i][0]){ok=false;break;} }
         if(!ok)continue;
         const ns=s.map((p,idx)=>idx===i?[nr,nc]:p); const key=JSON.stringify(ns);
         if(seen.has(key))continue; seen.add(key); parent.set(key,{from:s,moved:i,to:[nr,nc]}); q.push(ns);
@@ -330,15 +340,23 @@ function buildLevel(){
   syncCars(); updateUI();
 }
 
-function occGrid(st){const g=Array.from({length:N},()=>Array(N).fill(".")); LEVELS[levelIdx].v.forEach((v,i)=>{const[nm, , ,L,o]=v;const[nr,nc]=st[i];for(let k=0;k<L;k++){if(o==="H")g[nr][nc+k]=nm;else g[nr+k][nc]=nm;}}); return g;}
-function tryMove(i,dr,dc,animate=true){const v=LEVELS[levelIdx].v[i]; const L=v[3],o=v[4]; if(o==="H"&&dr!==0)return false; if(o==="V"&&dc!==0)return false;
-  const [nr,nc]=[state[i][0]+dr,state[i][1]+dc]; const g=occGrid(state);
-  for(let k=0;k<L;k++){const rr=o==="H"?nr:nr+k,c2=o==="H"?nc+k:nc; if(rr<0||rr>=N||c2<0||c2>=N)return false; if(g[rr][c2]!=="."&&g[rr][c2]!==v[0])return false;}
-  undoStack.push(JSON.parse(JSON.stringify(state))); state[i]=[nr,nc]; moves++; beep(520+moves*20); updateUI();
-  if(state[0][1]+2>=N) win();
-  syncCars(); return true; }
+function occGrid(st){const g=Array.from({length:N},()=>Array(N).fill(".")); LEVELS[levelIdx].v.forEach((v,i)=>{const[nm, , ,L,o]=v;const[nr,nc]=st[i];for(let k=0;k<L;k++){const rr=o==="H"?nr:nr+k, c2=o==="H"?nc+k:nc; if(rr<0||rr>=N||c2<0||c2>=N) continue; g[rr][c2]=nm;}}); return g;}
+function tryMove(i,dr,dc,opts={}){const v=LEVELS[levelIdx].v[i]; const L=v[3],o=v[4]; if(o==="H"&&dr!==0)return false; if(o==="V"&&dc!==0)return false;
+  const [cr,cc]=state[i]; const [nr,nc]=[cr+dr,cc+dc]; const g=occGrid(state);
+  for(let k=0;k<L;k++){const rr=o==="H"?nr:nr+k,c2=o==="H"?nc+k:nc;
+    if(rr<0||rr>=N||c2<0)return false;
+    if(c2>=N){ if(!(i===0 && rr===2 && c2===N))return false; else continue; }
+    if(g[rr][c2]!=="."&&g[rr][c2]!==v[0])return false; }
+  if(!opts.silent) undoStack.push(JSON.parse(JSON.stringify(state)));
+  state[i]=[nr,nc];
+  if(!opts.silent) moves++;
+  beep(520+moves*20); updateUI(); syncCars();
+  if(isGoal(state)) win();
+  return true; }
 function syncCars(){ vehicles.forEach((g,i)=>{ const v=LEVELS[levelIdx].v[i]; const [x,y]=carCenter(state[i][0],state[i][1],v[3],v[4]); g.position.set(x,y,0); g.rotation.z=0; }); }
-function win(){ beep(990); if(!prog.done.includes(levelIdx))prog.done.push(levelIdx); const best=prog.best[levelIdx]; if(!best||moves<best.moves)prog.best[levelIdx]={moves,time:fmt()}; localStorage.setItem(saveKey,JSON.stringify(prog)); alert(`클리어! ${moves}회 만에 출구로 나갔어요.`); updateUI(); }
+function win(){ beep(990); if(!playing){ if(!prog.done.includes(levelIdx))prog.done.push(levelIdx); const best=prog.best[levelIdx]; if(!best||moves<best.moves)prog.best[levelIdx]={moves,time:fmt()}; localStorage.setItem(saveKey,JSON.stringify(prog)); } updateUI();
+  document.getElementById("winInfo").textContent=`${moves}회 이동 · ${fmt()} · 최소 ${LEVELS[levelIdx].min ?? "-"}회`;
+  document.getElementById("winModal").classList.add("open"); }
 function updateUI(){ document.getElementById("moves").textContent=moves; document.getElementById("lvlno").textContent=String(levelIdx+1).padStart(2,"0");
   document.getElementById("undo").disabled=!undoStack.length; document.getElementById("prog").value=prog.done.length; document.getElementById("progressText").textContent=`해결한 퍼즐: ${prog.done.length} / ${LEVELS.length}`;
   const b=prog.best[levelIdx]; document.getElementById("best").textContent=b?`${b.moves}회·${b.time}`:"—";
@@ -349,7 +367,7 @@ function fmt(){const s=Math.floor((Date.now()-startTime)/1000); return String(Ma
 
 // input: click select, arrows/drag
 let rotateEnabled=true;
-function applyRotateToggle(){ controls.enableRotate=rotateEnabled; controls.enabled=true; const b=document.getElementById("rotateToggle"); if(b){ b.textContent=rotateEnabled?"화면 회전: 켜기":"화면 회전: 꺼기"; b.classList.toggle("primary", rotateEnabled); } }
+function applyRotateToggle(){ controls.enableRotate=rotateEnabled; controls.enabled=rotateEnabled; const b=document.getElementById("rotateToggle"); if(b){ b.textContent=rotateEnabled?"화면 회전: 켜기":"화면 회전: 꺼기"; b.classList.toggle("primary", rotateEnabled); b.setAttribute("aria-pressed", rotateEnabled?"true":"false"); } }
 document.getElementById("rotateToggle").onclick=()=>{ rotateEnabled=!rotateEnabled; applyRotateToggle(); };
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let drag=null;
 function pickCar(e){ const r=renderer.domElement.getBoundingClientRect(); ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1; ray.setFromCamera(ptr,camera);
@@ -358,9 +376,10 @@ renderer.domElement.addEventListener("pointerdown",e=>{ selected=pickCar(e);
   if(selected!=null){ controls.enabled=false; drag={x:e.clientX,y:e.clientY,i:selected}; renderer.domElement.style.cursor="grabbing"; }
   else { controls.enabled=rotateEnabled; controls.enableRotate=rotateEnabled; drag=null; } }, true);
 addEventListener("pointerup",()=>{ drag=null; controls.enabled=rotateEnabled; controls.enableRotate=rotateEnabled; renderer.domElement.style.cursor=""; });
-renderer.domElement.addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; const v=LEVELS[levelIdx].v[drag.i];
-  if(v[4]==="H"){ if(Math.abs(dx)>30){ tryMove(drag.i,0,dx>0?1:-1); drag.x=e.clientX; } }
-  else { if(Math.abs(dy)>30){ tryMove(drag.i,dy>0?1:-1,0); drag.y=e.clientY; } } });
+const DRAG_THRESHOLD=50; // 한 셀 이상 실제 이동해야 카운트 (마우스 미세 움직임 제외)
+renderer.domElement.addEventListener("pointermove",e=>{ if(!drag) return; const v=LEVELS[levelIdx].v[drag.i];
+  if(v[4]==="H"){ const dx=e.clientX-drag.x; if(Math.abs(dx)>DRAG_THRESHOLD){ if(tryMove(drag.i,0,dx>0?1:-1)) drag.x=e.clientX; } }
+  else { const dy=e.clientY-drag.y; if(Math.abs(dy)>DRAG_THRESHOLD){ if(tryMove(drag.i,dy>0?1:-1,0)) drag.y=e.clientY; } } });
 addEventListener("keydown",e=>{ if(selected==null)return; const map={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}; const m=map[e.key]; if(m){e.preventDefault(); tryMove(selected,m[0],m[1]);}
   if(e.key==="u"||e.key==="U") doUndo(); if(e.key==="r"||e.key==="R") buildLevel(); });
 function doUndo(){ if(!undoStack.length)return; state=undoStack.pop(); moves=Math.max(0,moves-1); syncCars(); updateUI(); }
@@ -371,10 +390,10 @@ levelSel.onchange=()=>{levelIdx=+levelSel.value; buildLevel();};
 document.getElementById("prev").onclick=()=>{levelIdx--; levelSel.value=levelIdx; buildLevel();};
 document.getElementById("next").onclick=()=>{levelIdx++; levelSel.value=levelIdx; buildLevel();};
 document.getElementById("undo").onclick=doUndo; document.getElementById("restart").onclick=buildLevel;
-document.getElementById("hint").onclick=()=>{const p=bfs(LEVELS[levelIdx], state); if(!p){alert("막혔습니다. 되돌리거나 다시 시작하세요."); return;} const mv=p[0]; selected=mv.moved; alert(`힌트: ${LEVELS[levelIdx].v[mv.moved][0]}번 차를 ${mv.to[0]>state[mv.moved][0]?"아래":mv.to[0]<state[mv.moved][0]?"위":mv.to[1]>state[mv.moved][1]?"오른": "왼쪽"}쪽으로 옮기세요.`);};
-document.getElementById("solve").onclick=async()=>{ if(playing)return; playing=true; let cur=JSON.parse(JSON.stringify(state)); let path=bfs(LEVELS[levelIdx], cur); if(!path){alert("해법 없음"); playing=false; return;} for(const mv of path){ // apply single move by re-solving step
-    state=cur; // move incrementally
-    const [dr,dc]=[mv.to[0]-cur[mv.moved][0], mv.to[1]-cur[mv.moved][1]]; tryMove(mv.moved,dr,dc); cur=JSON.parse(JSON.stringify(state)); await new Promise(r=>setTimeout(r,600)); if(state[0][1]+2>=N)break; } playing=false; };
+document.getElementById("hint").onclick=()=>{const p=bfs(LEVELS[levelIdx], state); if(!p){alert("막혔습니다. 되돌리거나 다시 시작하세요."); return;} const mv=p[0]; selected=mv.moved; alert(`힌트: ${LEVELS[levelIdx].v[mv.moved][0]}번 차를 ${mv.to[0]>state[mv.moved][0]?"아래":mv.to[0]<state[mv.moved][0]?"위":mv.to[1]>state[mv.moved][1]?"오른": "왼쪽"}쪽으로 옮기세요. (힉트는 카운트에 세지 않습니다)`);};
+document.getElementById("solve").onclick=async()=>{ if(playing)return; playing=true; let cur=JSON.parse(JSON.stringify(state)); let path=bfs(LEVELS[levelIdx], cur); if(!path){alert("해법 없음"); playing=false; return;} for(const mv of path){
+    state=cur;
+    const [dr,dc]=[mv.to[0]-cur[mv.moved][0], mv.to[1]-cur[mv.moved][1]]; tryMove(mv.moved,dr,dc,{silent:true}); cur=JSON.parse(JSON.stringify(state)); await new Promise(r=>setTimeout(r,600)); if(isGoal(state))break; } playing=false; };
 document.getElementById("v3d").onclick=()=>{camera.position.set(9,-10,10); controls.target.set(0,0,0);};
 document.getElementById("vtop").onclick=()=>{camera.position.set(0,0,13);};
 document.getElementById("sound").onclick=e=>{soundOn=!soundOn; e.target.textContent=soundOn?"사운드: 켜기":"사운드: 끄기";};
@@ -383,9 +402,11 @@ const upd=`2026-11-08
 - Rush Hour 3D 웹앱 출시: 12개 퍼즐, 드래그/방향키 이동, 최소 이동 계산(BFS), 힌트·해법 재생, 되돌리기/다시 시작, 시간·기록 저장, Three.js 3D 입체/위에서 보기, 다크 모드·사운드
 - 개선: 차량 드래그 시 화면 회전 멈춤(차량만 이동). 귀여운 장난감 자동차 재디자인(둥근 본체·유리 캐빈·라이트·범퍼·허브캡, 트럭 화물 상자, 경찰차 경광등/줄무늬)
 - 개선: 화면 회전 토글(“화면 회전: 켜기/꺼기”) — 꺼기면 회전 없이 차량 이동만. 목표 경찰차는 ★ 목표 차량 ★ 라벨·금빛 화살표·금빛 링·점멸 경광등으로 한눈에 구분
+- 수정: '이동'은 자동차가 실제로 한 칸 이동할 때만 셉니다. 목표차가 출구 밖으로 완전히 나간 뒤에야 미션 해결 판정. 해결 시 팝업 모달에 펄스 '다음 단계 도전' 버튼
 - 참고 사이트(jvibeschool.org/3D/RushHour)의 6×6 보드·노란 경찰차 출구 컨셉을 Blender 씬(rush-hour-3d.blend)과 공유
 `;
 document.getElementById("updText").textContent=upd;
+document.getElementById("nextChallenge").onclick=()=>{ document.getElementById("winModal").classList.remove("open"); levelIdx=Math.min(levelIdx+1, LEVELS.length-1); levelSel.value=levelIdx; buildLevel(); };
 document.getElementById("updbtn").onclick=()=>document.getElementById("updModal").classList.add("open");
 document.getElementById("help").onclick=()=>document.getElementById("helpModal").classList.add("open");
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
