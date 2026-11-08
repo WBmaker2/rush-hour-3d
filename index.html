@@ -426,7 +426,6 @@ const upd=`2026-11-08
 - 개선: 차량 드래그 시 화면 회전 멈춤(차량만 이동). 귀여운 장난감 자동차 재디자인(둥근 본체·유리 캐빈·라이트·범퍼·허브캡, 트럭 화물 상자, 경찰차 경광등/줄무늬)
 - 개선: 화면 회전 토글(“화면 회전: 켜기/꺼기”) — 꺼기면 회전 없이 차량 이동만. 목표 경찰차는 ★ 목표 차량 ★ 라벨·금빛 화살표·금빛 링·점멸 경광등으로 한눈에 구분
 - 수정: '이동'은 자동차가 실제로 한 칸 이동할 때만 셉니다. 목표차가 출구 밖으로 완전히 나간 뒤에야 미션 해결 판정. 해결 시 팝업 모달에 펄스 '다음 단계 도전' 버튼
-- 참고 사이트(jvibeschool.org/3D/RushHour)의 6×6 보드·노란 경찰차 출구 컨셉을 Blender 씬(rush-hour-3d.blend)과 공유
 `;
 document.getElementById("updText").textContent=upd;
 document.getElementById("nextChallenge").onclick=()=>{ document.getElementById("winModal").classList.remove("open"); if(levelIdx>=LEVELS.length-1){ levelIdx=0; } else { levelIdx+=1; } levelSel.value=levelIdx; buildLevel(); };
