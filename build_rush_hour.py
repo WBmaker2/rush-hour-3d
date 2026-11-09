@@ -11,16 +11,13 @@ for m in list(bpy.data.materials):
 
 # --- 2. Level data: (name, row, col, length, orientation 'H'/'V', color_key) ---
 LEVEL = [
-    ("P", 2, 0, 2, "H", "target"),  # yellow police car -> exit right row 2
-    ("A", 0, 2, 2, "V", "blue"),
-    ("B", 0, 4, 2, "H", "green"),
-    ("C", 1, 0, 2, "H", "red"),
-    ("D", 2, 4, 2, "V", "purple"),
-    ("E", 3, 2, 3, "H", "truck"),
-    ("F", 3, 0, 2, "V", "orange"),
-    ("G", 4, 3, 2, "V", "teal"),
-    ("H", 5, 1, 2, "H", "pink"),
-    ("I", 4, 5, 2, "V", "blue"),
+    ("P", 2, 0, 2, "H", "target"),
+    ("A", 2, 4, 2, "V", "blue"),
+    ("B", 4, 2, 3, "H", "green"),
+    ("C", 1, 2, 2, "V", "red"),
+    ("D", 0, 4, 2, "H", "purple"),
+    ("E", 1, 5, 2, "V", "truck"),
+    ("F", 3, 5, 3, "V", "orange"),
 ]
 
 # --- 3. BFS solver to verify solvable + find minimum moves ---

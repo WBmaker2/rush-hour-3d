@@ -4,6 +4,10 @@
 - Blender 씬 세밀화(장난감 스타일 유지): PolyHaven HDRI(small_rural_road) 적용, 선형 보정으로 선명한 차량 색상, 베벨 모디파이어·둥근 본체·유리 캐빈·헤드/테일 라이트·트럭 화물 리브·경찰 경광등 추가, 타이어+허브캡·미러·범퍼·출구 셰브론·교통콘 소품, Sun+Fill 3점조명, AgX High Contrast + 노출 -0.4
 - 해법 재생 애니메이션 유지(최소 이동 6회, 1~73프레임). rush-hour-3d.blend 저장 완료. 웹(Three.js)은 그대로
 
+- 난이도 전반 상향: 전 레벨을 최소 이동 10회 이상으로 재구성(초반 5→10회 등, 상한 25회). 차량 대수 증대와 출구 방해 차량 배치로 초반이 너무 쉽던 문제를 해소
+
+- Blender 씬을 새 LEVEL 01(7대, 최소 이동 10회)로 동기화 재생성하고 rush-hour-3d.blend 저장 완료
+
 ## 2026-11-08
 - Blender MCP로 3D 구현을 시작했으나, 초기화 함수(factory reset)가 MCP 연결을 끊음
 - Blender에서는 factory reset을 쓰지 않고 수동으로 지우는 `build_rush_hour.py` 스크립트 저장 — Blender Scripting에서 Run Script 하면 보드·차량·해법 재생 애니메이션 생성됨

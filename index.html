@@ -145,32 +145,32 @@ const COLORS = {
   purple:0x7c3aed, truck:0x1e293b, orange:0xf97316, teal:0x0d9488, pink:0xe879f9, gray:0x475569
 };
 const LEVELS = [
-  {name:"경찰차 질주", min:5, v:[["P",2,0,2,"H","target"],["A",0,4,3,"H","blue"],["B",1,1,2,"H","green"],["C",3,2,2,"V","red"],["D",4,4,2,"V","purple"],["E",5,0,3,"H","truck"]]},
-  {name:"P A B C D E F G H I", min:6, v:[["P",2,0,2,"H","target"],["A",0,2,2,"V","blue"],["B",0,4,2,"H","green"],["C",1,0,2,"H","red"],["D",2,4,2,"V","purple"],["E",3,1,3,"H","truck"],["F",3,0,2,"V","orange"],["G",4,3,2,"V","teal"],["H",5,1,2,"H","pink"],["I",4,5,2,"V","blue"]]},
-  {name:"돌아가는 길", min:6, v:[["P",2,0,2,"H","target"],["A",0,1,2,"V","blue"],["B",3,2,3,"H","green"],["C",4,2,2,"H","red"],["D",1,4,2,"V","purple"],["E",5,0,2,"H","truck"],["F",3,5,2,"V","orange"]]},
-  {name:"교차로", min:7, v:[["P",2,0,2,"H","target"],["A",1,2,2,"V","blue"],["B",3,2,2,"V","green"],["C",0,4,2,"H","red"],["D",4,0,2,"H","purple"],["E",2,4,2,"V","truck"],["F",5,3,3,"H","orange"]]},
-  {name:"긴 줄", min:7, v:[["P",2,0,2,"H","target"],["A",0,3,3,"H","blue"],["B",1,0,2,"H","green"],["C",3,3,2,"V","red"],["D",4,0,3,"H","purple"],["E",1,5,2,"V","truck"]]},
-  {name:"많아지는 차", min:7, v:[["P",2,0,2,"H","target"],["A",0,0,2,"H","blue"],["B",0,3,2,"H","green"],["C",1,2,2,"V","red"],["D",3,1,2,"V","purple"],["E",4,2,3,"H","truck"],["F",1,5,2,"V","orange"],["G",5,3,2,"H","teal"]]},
-  {name:"확장 01", min:7, v:[["P",2,0,2,"H","target"],["A",0,2,2,"H","blue"],["B",4,4,2,"H","green"],["C",3,0,2,"H","red"],["D",3,4,2,"H","purple"],["E",3,2,2,"V","truck"],["F",4,3,2,"V","orange"],["G",1,3,2,"V","teal"]]},
-  {name:"출구 가까이", min:8, v:[["P",2,1,2,"H","target"],["A",0,0,2,"V","blue"],["B",2,4,2,"V","green"],["C",4,1,3,"H","red"],["D",0,5,3,"V","purple"],["E",5,3,2,"H","truck"]]},
-  {name:"트럭 집합", min:8, v:[["P",2,0,2,"H","target"],["A",0,1,3,"H","blue"],["B",3,0,3,"H","green"],["C",1,5,3,"V","red"],["D",4,4,2,"V","purple"],["E",2,3,2,"V","truck"],["F",5,2,2,"H","orange"]]},
-  {name:"확장 02", min:8, v:[["P",2,0,2,"H","target"],["A",1,1,3,"H","blue"],["B",4,1,2,"H","green"],["C",3,5,2,"V","red"],["D",1,4,2,"V","purple"],["E",0,0,2,"H","truck"],["F",2,3,3,"V","orange"],["G",5,0,3,"H","teal"],["H",1,5,2,"V","pink"],["I",5,4,2,"H","blue"]]},
-  {name:"쉽게 시작", min:9, v:[["P",2,0,2,"H","target"],["A",0,3,2,"V","blue"],["B",0,0,2,"H","green"],["C",3,1,2,"H","red"],["D",1,5,2,"V","purple"],["E",4,2,3,"H","truck"],["F",2,3,2,"V","orange"]]},
-  {name:"확장 03", min:9, v:[["P",2,0,2,"H","target"],["A",1,5,2,"V","blue"],["B",0,2,2,"H","green"],["C",1,1,2,"H","red"],["D",3,0,2,"V","purple"],["E",5,2,3,"H","truck"],["F",2,3,3,"V","orange"]]},
-  {name:"마지막 관문", min:10, v:[["P",2,0,2,"H","target"],["A",0,2,2,"V","blue"],["B",2,3,2,"V","green"],["C",0,4,2,"H","red"],["D",4,0,2,"V","purple"],["E",3,0,3,"H","truck"],["F",5,1,2,"H","orange"],["G",1,5,3,"V","teal"],["H",4,4,2,"H","pink"]]},
-  {name:"확장 04", min:10, v:[["P",2,0,2,"H","target"],["A",0,2,2,"H","blue"],["B",4,3,2,"H","green"],["C",1,2,2,"V","red"],["D",0,4,2,"V","purple"],["E",0,5,2,"V","truck"],["F",2,3,2,"V","orange"],["G",3,0,2,"V","teal"],["H",5,1,2,"H","pink"],["I",4,1,2,"H","blue"]]},
-  {name:"확장 05", min:11, v:[["P",2,0,2,"H","target"],["A",0,5,2,"V","blue"],["B",0,2,3,"V","green"],["C",0,3,2,"H","red"],["D",3,4,2,"V","purple"],["E",5,0,3,"H","truck"]]},
-  {name:"확장 06", min:12, v:[["P",2,0,2,"H","target"],["A",1,4,2,"V","blue"],["B",3,0,3,"V","green"],["C",0,5,3,"V","red"],["D",4,1,2,"V","purple"],["E",2,3,2,"V","truck"],["F",0,3,2,"H","orange"],["G",2,2,2,"V","teal"],["H",5,2,2,"H","pink"]]},
-  {name:"가운데 막힘", min:13, v:[["P",2,0,2,"H","target"],["A",0,2,3,"V","blue"],["B",1,4,2,"V","green"],["C",3,0,3,"H","red"],["D",4,3,2,"V","purple"],["E",0,5,2,"V","truck"],["F",5,1,2,"H","orange"]]},
-  {name:"확장 07", min:13, v:[["P",2,0,2,"H","target"],["A",1,4,2,"H","blue"],["B",0,0,3,"H","green"],["C",3,2,2,"V","red"],["D",0,3,2,"V","purple"],["E",1,2,2,"V","truck"],["F",5,1,2,"H","orange"],["G",4,4,2,"V","teal"],["H",3,3,2,"H","pink"]]},
-  {name:"확장 08", min:14, v:[["P",2,0,2,"H","target"],["A",4,2,2,"H","blue"],["B",0,2,3,"V","green"],["C",3,0,3,"H","red"],["D",3,5,2,"V","purple"],["E",1,4,2,"V","truck"],["F",5,0,2,"H","orange"],["G",0,5,2,"V","teal"],["H",0,0,2,"V","pink"]]},
-  {name:"확장 09", min:16, v:[["P",2,0,2,"H","target"],["A",2,4,2,"V","blue"],["B",3,1,2,"H","green"],["C",0,3,3,"H","red"],["D",1,4,2,"H","purple"],["E",4,0,2,"H","truck"],["F",0,2,3,"V","orange"],["G",4,2,3,"H","teal"]]},
-  {name:"확장 10", min:17, v:[["P",2,0,2,"H","target"],["A",2,2,2,"V","blue"],["B",4,0,2,"V","green"],["C",2,5,2,"V","red"],["D",4,4,2,"H","purple"],["E",0,4,3,"V","truck"],["F",1,1,3,"H","orange"],["G",3,1,2,"V","teal"],["H",0,1,3,"H","pink"]]},
-  {name:"확장 11", min:18, v:[["P",2,0,2,"H","target"],["A",5,2,2,"H","blue"],["B",0,4,3,"V","green"],["C",2,2,2,"V","red"],["D",2,5,2,"V","purple"],["E",4,1,2,"H","truck"],["F",1,1,2,"H","orange"],["G",3,0,2,"H","teal"],["H",0,1,3,"H","pink"],["I",0,0,2,"V","blue"],["J",1,3,2,"V","green"],["K",3,3,2,"H","red"]]},
-  {name:"확장 12", min:18, v:[["P",2,0,2,"H","target"],["A",2,4,2,"V","blue"],["B",1,5,2,"V","green"],["C",4,3,2,"H","red"],["D",0,2,3,"V","purple"],["E",0,0,2,"V","truck"],["F",4,1,2,"H","orange"],["G",3,0,3,"H","teal"],["H",0,3,2,"V","pink"],["I",5,0,3,"H","blue"],["J",0,1,2,"V","green"]]},
-  {name:"확장 13", min:19, v:[["P",2,0,2,"H","target"],["A",1,2,3,"H","blue"],["B",3,3,2,"V","green"],["C",3,4,2,"H","red"],["D",3,0,3,"V","purple"],["E",0,5,3,"V","truck"],["F",2,2,2,"V","orange"],["G",0,2,2,"H","teal"],["H",4,2,2,"V","pink"],["I",5,3,2,"H","blue"]]},
-  {name:"확장 14", min:20, v:[["P",2,0,2,"H","target"],["A",3,1,2,"V","blue"],["B",3,4,2,"V","green"],["C",1,2,2,"H","red"],["D",2,2,2,"V","purple"],["E",3,0,2,"V","truck"],["F",1,4,2,"H","orange"],["G",2,5,2,"V","teal"],["H",0,3,3,"H","pink"],["I",4,2,2,"H","blue"],["J",0,0,2,"V","green"]]},
-  {name:"전문가 시작", min:21, v:[["P",2,0,2,"H","target"],["A",0,1,2,"V","blue"],["B",0,3,2,"H","green"],["C",3,1,3,"H","red"],["D",2,4,3,"V","purple"],["E",4,2,2,"V","truck"],["F",5,3,2,"H","orange"],["G",1,5,2,"V","teal"]]},
+  {name:"경찰차 질주", min:10, v:[["P",2,0,2,"H","target"],["A",2,4,2,"V","blue"],["B",4,2,3,"H","green"],["C",1,2,2,"V","red"],["D",0,4,2,"H","purple"],["E",1,5,2,"V","truck"],["F",3,5,3,"V","orange"]]},
+  {name:"회전교차로", min:11, v:[["P",2,0,2,"H","target"],["A",0,3,2,"H","blue"],["B",1,3,3,"V","green"],["C",4,2,2,"V","red"],["D",2,5,2,"V","purple"],["E",1,4,2,"V","truck"],["F",4,4,2,"H","orange"]]},
+  {name:"돌아가는 길", min:10, v:[["P",2,0,2,"H","target"],["A",0,3,2,"V","blue"],["B",0,0,2,"H","green"],["C",3,2,3,"H","red"],["D",0,2,3,"V","purple"],["E",3,5,2,"V","truck"],["F",0,4,2,"V","orange"],["G",4,3,2,"H","teal"]]},
+  {name:"교차로", min:11, v:[["P",2,0,2,"H","target"],["A",5,1,3,"H","blue"],["B",1,2,2,"V","green"],["C",0,0,2,"H","red"],["D",0,4,3,"V","purple"],["E",4,2,3,"H","truck"],["F",0,2,2,"H","orange"]]},
+  {name:"긴 줄", min:10, v:[["P",2,0,2,"H","target"],["A",3,1,2,"H","blue"],["B",3,3,2,"H","green"],["C",0,2,3,"V","red"],["D",1,3,3,"H","purple"],["E",4,1,2,"H","truck"],["F",5,0,2,"H","orange"],["G",4,3,2,"H","teal"]]},
+  {name:"많아지는 차", min:12, v:[["P",2,0,2,"H","target"],["A",1,2,2,"V","blue"],["B",3,4,2,"V","green"],["C",0,0,2,"H","red"],["D",3,0,2,"H","purple"],["E",0,3,3,"V","truck"],["F",5,3,2,"H","orange"],["G",2,5,3,"V","teal"]]},
+  {name:"밀물려 밀기", min:14, v:[["P",2,0,2,"H","target"],["A",0,0,2,"H","blue"],["B",0,4,3,"V","green"],["C",5,2,2,"H","red"],["D",3,0,2,"H","purple"],["E",5,4,2,"H","truck"],["F",0,2,2,"H","orange"],["G",1,3,2,"V","teal"]]},
+  {name:"출구 가까이", min:12, v:[["P",2,0,2,"H","target"],["A",0,5,2,"V","blue"],["B",2,5,2,"V","green"],["C",2,3,2,"V","red"],["D",1,2,2,"V","purple"],["E",4,3,2,"H","truck"],["F",0,1,3,"H","orange"],["G",1,3,2,"H","teal"]]},
+  {name:"트럭 집합", min:14, v:[["P",2,0,2,"H","target"],["A",0,1,2,"H","blue"],["B",0,3,2,"H","green"],["C",4,4,2,"H","red"],["D",2,4,2,"V","purple"],["E",4,1,3,"H","truck"],["F",0,5,3,"V","orange"],["G",1,0,3,"H","teal"]]},
+  {name:"확장 02", min:16, v:[["P",2,0,2,"H","target"],["A",2,2,2,"V","blue"],["B",4,2,2,"H","green"],["C",1,5,2,"V","red"],["D",0,0,3,"H","purple"],["E",1,1,3,"H","truck"],["F",4,1,2,"V","orange"],["G",5,3,2,"H","teal"],["H",2,4,3,"V","pink"]]},
+  {name:"쉽게 시작", min:15, v:[["P",2,0,2,"H","target"],["A",1,3,3,"H","blue"],["B",0,2,3,"V","green"],["C",3,2,2,"H","red"],["D",0,0,2,"V","purple"],["E",4,5,2,"V","truck"],["F",5,0,3,"H","orange"],["G",2,4,2,"V","teal"]]},
+  {name:"확장 03", min:17, v:[["P",2,0,2,"H","target"],["A",4,3,3,"H","blue"],["B",0,3,3,"H","green"],["C",1,3,2,"V","red"],["D",2,2,2,"V","purple"],["E",5,0,2,"H","truck"],["F",3,0,2,"V","orange"],["G",1,4,3,"V","teal"],["H",5,4,2,"H","pink"]]},
+  {name:"마지막 관문", min:14, v:[["P",2,0,2,"H","target"],["A",1,5,2,"V","blue"],["B",0,2,2,"H","green"],["C",3,3,2,"H","red"],["D",4,1,3,"H","purple"],["E",1,0,3,"H","truck"],["F",2,2,2,"V","orange"],["G",5,2,3,"H","teal"],["H",4,5,2,"V","pink"]]},
+  {name:"확장 04", min:16, v:[["P",2,0,2,"H","target"],["A",0,5,2,"V","blue"],["B",1,2,3,"V","green"],["C",4,5,2,"V","red"],["D",1,4,2,"V","purple"],["E",4,1,3,"H","truck"],["F",0,0,2,"V","orange"],["G",0,1,3,"H","teal"],["H",3,3,2,"H","pink"]]},
+  {name:"확장 05", min:16, v:[["P",2,0,2,"H","target"],["A",4,0,2,"H","blue"],["B",4,2,2,"V","green"],["C",1,3,3,"V","red"],["D",4,5,2,"V","purple"],["E",0,1,2,"H","truck"],["F",2,4,2,"V","orange"],["G",1,2,2,"V","teal"],["H",4,3,2,"H","pink"]]},
+  {name:"확장 06", min:16, v:[["P",2,0,2,"H","target"],["A",2,2,2,"V","blue"],["B",4,5,2,"V","green"],["C",1,4,3,"V","red"],["D",0,5,2,"V","purple"],["E",0,0,2,"V","truck"],["F",0,2,3,"H","orange"],["G",4,1,2,"H","teal"],["H",4,3,2,"H","pink"]]},
+  {name:"가운데 막힘", min:17, v:[["P",2,0,2,"H","target"],["A",3,5,3,"V","blue"],["B",2,4,2,"V","green"],["C",0,2,2,"V","red"],["D",1,5,2,"V","purple"],["E",1,3,2,"V","truck"],["F",3,1,2,"H","orange"],["G",4,3,2,"V","teal"],["H",3,0,3,"V","pink"],["I",0,3,3,"H","blue"]]},
+  {name:"확장 07", min:18, v:[["P",2,0,2,"H","target"],["A",1,2,3,"V","blue"],["B",3,4,2,"V","green"],["C",1,3,2,"V","red"],["D",0,1,3,"H","purple"],["E",5,0,3,"H","truck"],["F",0,5,3,"V","orange"],["G",4,3,2,"V","teal"],["H",3,0,2,"V","pink"]]},
+  {name:"확장 08", min:20, v:[["P",2,0,2,"H","target"],["A",2,3,3,"V","blue"],["B",0,1,2,"V","green"],["C",3,4,2,"H","red"],["D",4,5,2,"V","purple"],["E",4,1,2,"V","truck"],["F",4,0,2,"V","orange"],["G",3,0,2,"H","teal"],["H",5,3,2,"H","pink"],["I",0,2,2,"H","blue"]]},
+  {name:"확장 09", min:19, v:[["P",2,0,2,"H","target"],["A",0,1,3,"H","blue"],["B",1,5,2,"V","green"],["C",0,0,2,"V","red"],["D",5,4,2,"H","purple"],["E",2,2,2,"V","truck"],["F",4,1,3,"H","orange"],["G",4,0,2,"V","teal"],["H",1,3,2,"V","pink"],["I",2,4,3,"V","blue"]]},
+  {name:"확장 10", min:20, v:[["P",2,0,2,"H","target"],["A",5,1,3,"H","blue"],["B",3,0,3,"V","green"],["C",1,2,3,"V","red"],["D",1,5,2,"V","purple"],["E",2,3,2,"V","truck"],["F",3,4,2,"V","orange"],["G",0,3,3,"H","teal"],["H",4,1,2,"H","pink"],["I",1,3,2,"H","blue"]]},
+  {name:"확장 11", min:22, v:[["P",2,0,2,"H","target"],["A",2,2,2,"V","blue"],["B",3,3,2,"H","green"],["C",3,0,2,"V","red"],["D",4,4,2,"H","purple"],["E",5,0,2,"H","truck"],["F",4,3,2,"V","orange"],["G",3,1,2,"V","teal"],["H",0,3,2,"V","pink"],["I",1,5,3,"V","blue"]]},
+  {name:"확장 12", min:22, v:[["P",2,0,2,"H","target"],["A",2,2,3,"V","blue"],["B",1,5,2,"V","green"],["C",2,4,2,"V","red"],["D",3,0,2,"H","purple"],["E",5,3,3,"H","truck"],["F",0,2,3,"H","orange"],["G",1,1,3,"H","teal"],["H",3,5,2,"V","pink"],["I",0,0,2,"H","blue"],["J",4,3,2,"H","green"]]},
+  {name:"확장 13", min:25, v:[["P",2,0,2,"H","target"],["A",0,0,3,"H","blue"],["B",3,2,2,"V","green"],["C",3,4,2,"H","red"],["D",5,2,2,"H","purple"],["E",0,4,3,"V","truck"],["F",3,1,3,"V","orange"],["G",4,0,2,"V","teal"],["H",4,3,2,"H","pink"],["I",5,4,2,"H","blue"],["J",1,2,2,"H","green"]]},
+  {name:"전문가 시작", min:22, v:[["P",2,0,2,"H","target"],["A",0,1,3,"H","blue"],["B",2,3,2,"V","green"],["C",4,3,2,"H","red"],["D",1,5,2,"V","purple"],["E",5,0,2,"H","truck"],["F",1,2,2,"V","orange"],["G",3,0,2,"V","teal"],["H",3,5,2,"V","pink"],["I",5,2,3,"H","blue"],["J",3,2,2,"V","green"]]},
+  {name:"챔피언 도전", min:22, v:[["P",2,0,2,"H","target"],["A",0,2,2,"H","blue"],["B",0,0,2,"V","green"],["C",3,3,3,"V","red"],["D",1,2,2,"V","purple"],["E",3,5,2,"V","truck"],["F",0,4,2,"V","orange"],["G",3,2,2,"V","teal"],["H",3,4,3,"V","pink"],["I",1,3,2,"V","blue"],["J",3,0,2,"H","green"]]},
 ];
 const N=6;
 const saveKey="rush-hour-progress-v1";
@@ -421,7 +421,11 @@ document.getElementById("v3d").onclick=()=>{camera.position.set(9,-10,10); contr
 document.getElementById("vtop").onclick=()=>{camera.position.set(0,0,12); controls.target.set(0,0,0); document.getElementById("vtop").classList.add("primary"); document.getElementById("v3d").classList.remove("primary");};
 document.getElementById("sound").onclick=e=>{soundOn=!soundOn; e.target.textContent=soundOn?"사운드: 켜기":"사운드: 끄기";};
 document.getElementById("theme").onclick=e=>{document.body.classList.toggle("dark"); e.target.textContent=document.body.classList.contains("dark")?"라이트 모드":"다크 모드";};
-const upd=`2026-11-08
+const upd=`2026-11-09
+- Blender 씬 세밀화(장난감 스타일 유지): PolyHaven HDRI 적용, 베벨 모디파이어·둥근 몸체·라이트·트럭 화물 리브·경찰 경광등 등 디테일 추가, Sun+Fill 조명과 선명한 색상 보정. 해법 재생 애니메이션 유지(rush-hour-3d.blend)
+- 난이도 전반 상향: 전 레벨을 최소 이동 10회 이상으로 재구성(초반 5→10회 등), 차량 대수 증대와 출구 방해 배치로 초반이 너무 쉽던 문제를 해소
+- Blender 씬도 새 LEVEL 01로 동기화 재생성(rush-hour-3d.blend)
+2026-11-08
 - Rush Hour 3D 웹앱 출시: 26개 퍼즐(난이도 오름차순), 드래그/방향키 이동, 최소 이동 계산(BFS), 힌트·해법 재생, 되돌리기/다시 시작, 시간·기록 저장, Three.js 3D 입체/위에서 보기, 다크 모드·사운드
 - 개선: 차량 드래그 시 화면 회전 멈춤(차량만 이동). 귀여운 장난감 자동차 재디자인(둥근 본체·유리 캐빈·라이트·범퍼·허브캡, 트럭 화물 상자, 경찰차 경광등/줄무늬)
 - 개선: 화면 회전 토글(“화면 회전: 켜기/꺼기”) — 꺼기면 회전 없이 차량 이동만. 목표 경찰차는 ★ 목표 차량 ★ 라벨·금빛 화살표·금빛 링·점멸 경광등으로 한눈에 구분
